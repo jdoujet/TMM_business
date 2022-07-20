@@ -1,5 +1,5 @@
 <template>
-  <v-app style="background-color:#1a1919">
+  <v-app >
     <sidebar></sidebar>
     <sidebar v-if="!isMobile"/>
     <v-main v-else>
@@ -15,8 +15,8 @@
 
 <script>
 
-import sidebar from "./components/NavBarSideBar.vue";
-
+//import sidebar from "./components/NavBarSideBar.vue";
+import sidebar from "./components/sideBarMenu.vue";
 export default {
   components: { sidebar },
   name: "App",
