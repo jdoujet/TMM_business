@@ -1,13 +1,153 @@
 <template>
   <div id="main">
 
-      <v-row style="padding: 2% 2% 0% 2%; background-color:#4b548b;"> <!--#f5f2f2  #E6E7EB-->
+      <v-row align="center" style="padding: 2% 2% 0% 2%; background-color:#4b548b;"> <!--#f5f2f2  #E6E7EB-->
         <v-card-title style=" color: white; font-size: 22px; margin-right:-2%" >
            Track My Market - Business
         </v-card-title>
         <v-card-title style="font-weight: bold; color: white; font-size: 23px;">
            / Editeur
         </v-card-title>
+        <v-spacer></v-spacer>
+        <v-btn @click="displayChoixPlanForm">Choisir un Autre Plan</v-btn>
+        
+        
+      </v-row>
+
+      <v-row justify="center" style="background-color:#4b548b;">
+        <v-col cols="10" sm="10" md="10" lg="10" xl="10">
+          
+            <v-card style="border: 4px solid #3B435F;">
+                <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                  <v-row justify="end">
+                    
+                    <v-btn
+                      color="#4b548b"
+                      icon
+                      large
+                      @click="closeLayoutDetails()"
+                    >
+                      <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                  </v-row>
+                </v-col>
+              <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                <v-row justify="center">
+                  
+                  <v-card-title style="font-weight: bold; color: #4b548b; font-size: 22px; ">Charger un autre plan</v-card-title>
+                  
+                 
+              </v-row>
+              </v-col>
+              <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                <v-row justify="center">
+                  
+                    <v-card-title style="padding-bottom:5%">Utilisateur :</v-card-title>
+                  
+                  <v-col cols="12" sm="12" md="6" lg="6" xl="6">
+                    
+                      
+                  
+                  <v-select 
+                            :items="$t('articleFilters')"
+                            item-text="value"
+                            item-value="url"
+                            label="Choisir utilisateur"
+                            persistent-hint
+                            return-object
+                            single-line
+                            dense
+                            solo
+                            color="white"
+                           
+                          >
+                    </v-select>
+                
+                
+                </v-col>
+                <v-col cols="3" sm="3" md="2" lg="2" xl="2">
+                  <v-btn> Rechercher </v-btn>
+                </v-col>
+                </v-row>
+              </v-col>
+              <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                <v-row justify="center">
+                  
+                    <v-card-title style="padding-bottom:5%">Supermarché :</v-card-title>
+                  
+                  <v-col cols="12" sm="12" md="6" lg="6" xl="6">
+                    
+                      
+                  
+                  <v-select 
+                            :items="$t('articleFilters')"
+                            item-text="value"
+                            item-value="url"
+                            label="Choisir supermarché"
+                            persistent-hint
+                            return-object
+                            single-line
+                            dense
+                            solo
+                            color="white"
+                           
+                          >
+                    </v-select>
+                
+                
+                </v-col>
+                <v-col cols="3" sm="3" md="2" lg="2" xl="2">
+                <v-btn> Rechercher </v-btn>
+                </v-col>
+                </v-row>
+              </v-col>
+
+                
+              <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                <v-row justify="center">
+                  
+                    <v-card-title style="padding-bottom:5%">Etage :</v-card-title>
+                  
+                  <v-col cols="12" sm="12" md="7" lg="7" xl="7">
+                    
+                      
+                  
+                  <v-select 
+                            :items="$t('articleFilters')"
+                            item-text="value"
+                            item-value="url"
+                            label="Choisir etage du plan"
+                            persistent-hint
+                            return-object
+                            single-line
+                            dense
+                            solo
+                            color="white"
+                           
+                          >
+                    </v-select>
+                
+                
+                </v-col>
+                <v-col cols="3" sm="3" md="2" lg="2" xl="2">
+                <v-btn> Rechercher </v-btn>
+                </v-col>
+                </v-row>
+              </v-col>
+
+              <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                <v-row justify="center">
+                  <v-col cols="6" sm="6" md="6" lg="3" xl="3">
+                    <v-btn color="#4b548b" style="color:white;">
+                      Actualiser le Plan
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-col>
+           
+          </v-card>
+          
+        </v-col>
       </v-row>
 
       <v-row id="mapHeader1" align="center" justify="end" style="padding: 1% 2% 2% 2%; background-color:#4b548b; "><!-- height:600px -->
@@ -326,6 +466,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
 import Panzoom from '@panzoom/panzoom'
+/*import * as test from '../../serverPostgreSQL.js'*/
+
 
 class Beacon {
   constructor(x, y, radius, color, lineColor, lineWidth){
@@ -543,6 +685,22 @@ export default {
       let actualScale = l.replace('scale(', '');
 
     },*/
+    displayChoixPlanForm(){
+      if(!this.displayChangePlanForm){
+        document.getElementById('mapHeader1').style.display="flex"; 
+        document.getElementById('mapHeader2').style.display="flex";
+        document.getElementById('iconChevronDisplayFooter1').style.display="block";
+        document.getElementById('iconChevronDisplayFooter2').style.display="none";
+        this.displayChangePlanForm=true;
+      }else{
+        document.getElementById('mapHeader1').style.display="none";
+        document.getElementById('mapHeader2').style.display="none";
+        document.getElementById('iconChevronDisplayFooter1').style.display="none";
+        document.getElementById('iconChevronDisplayFooter2').style.display="block";
+        this.displayChangePlanForm=false;
+      }
+      
+    },
 
     reDrawingCanva(){
       this.vueCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -661,7 +819,8 @@ export default {
       this.blocksArray.push(new Rectangle(800.0,700.0,100.0,300.0, '#91A0FF', '#4B548B', 2));
       this.beaconArray.push(new Beacon(100, 75, 15, '#32a852', '#1b1c1b', 2));
       this.reDrawingCanva();
-
+/*"mongodb+srv://jdoujet:XJFgfRU5AexI4W8P@ClusterTMM1.mongodb.net/test?w=majority"*/
+    
     },
 
     changeBlocksSize(previousSize, actualSize){
@@ -803,7 +962,6 @@ export default {
       document.getElementById("cardLayoutDetails").style.display="none";
     },
 
-
     setZoom(zoom,el) {
       
       let transformOrigin = [0,0];
@@ -832,7 +990,9 @@ export default {
   },
   data: () => ({
       items: ['Foo', 'Bar', 'Fizz', 'Buzz'],
-      
+      select: { url: "", value: "", placeholder: "" },
+      inputValue: "",
+      articles: []
   }),
 };
 </script>
