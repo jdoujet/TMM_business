@@ -434,6 +434,14 @@
                 >
                   Ajouter au Plan
               </v-btn>
+              <v-btn
+                  color="#4b548b"
+                  dark
+                  x-large
+                  @click="this.deleteRayon"
+                >
+                  Supprimer du Plan
+              </v-btn>
           </v-row>
         </v-col>
 
@@ -1341,22 +1349,31 @@ export default {
     },
 
     
-    callCreateRayon : function() {
-      this.jsonAssociateRayonAndPlan = {id_plan:"", id_rayon:""}
-      this.jsonAssociateRayonAndPlan.id_plan=this.plan.id_plan
-      axios
-        .post(
-          "https://tmmbusiness-back.herokuapp.com/rayon/", 
-          this.jsonSubmitNewRayonForm,
-            {
-              headers: { 
-                'Content-Type' : 'application/json' 
+    callCreateRayon : async function() {
+       try{
+        let response = await axios
+          .post(
+            "https://tmmbusiness-back.herokuapp.com/rayon", 
+            this.jsonSubmitNewRayonForm,
+              {
+                headers: { 
+                  'Content-Type' : 'application/json' 
+                }
               }
-            }
-        ).then((response) => {
-            this.jsonAssociateRayonAndPlan.id_rayon = response
-             
-        });
+          )
+          console.log(response,"response")
+          this.jsonAssociateRayonAndPlan.id_rayon=response.data
+          
+       }
+       catch(err){
+        console.log(err)
+       }
+       return this.jsonAssociateRayonAndPlan.id_rayon;
+        //console.log("test associated", this.jsonAssociateRayonAndPlan)
+      
+    },
+
+    createAssociationBetweenRayonAndPlan(){
       axios
         .post(
           "https://tmmbusiness-back.herokuapp.com/rayon/plan",
@@ -1383,7 +1400,7 @@ export default {
               }
             }
         ).then((response) => {
-            console.log(alert(response));
+            console.log(alert(response.data));
              
         });
     },
@@ -1536,10 +1553,17 @@ export default {
       this.preSubmitNewRayonForm.longueur=longueur
     },
 
-    addRayonToPlan(){
+    async addRayonToPlan(){
       this.jsonSubmitNewRayonForm = this.preSubmitNewRayonForm
-      this.callCreateRayon();
-      console.log(this.jsonSubmitNewRayonForm )
+      this.jsonAssociateRayonAndPlan = {id_plan:"", id_rayon:""}
+      this.jsonAssociateRayonAndPlan.id_plan=this.plan.id
+      let test = await this.callCreateRayon();
+      console.log(test, "test")
+      //this.jsonAssociateRayonAndPlan.id_rayon = await this.callCreateRayon();
+      this.createAssociationBetweenRayonAndPlan();
+      console.log(this.jsonAssociateRayonAndPlan)
+      console.log(this.jsonAssociateRayonAndPlan.id_rayon)
+      //console.log(this.jsonSubmitNewRayonForm )
 
     },
 
@@ -1598,7 +1622,7 @@ export default {
       preSubmitNewRayonFormCoordonneesY: "",
       jsonSubmitNewRayonForm: {nom_rayon: "", type_rayon: "", longueur:0, largeur:0, image_rayon: "", id_article_phare:null, coordonnees:""},
       jsonAssociateRayonAndPlan: {id_plan: "", id_rayon: ""},
-      deleteIdRayon: "6",
+      deleteIdRayon: "14",
       //nom, prenom, password
       //selectUser: { nom: "", prenom: "", password: "" },
       //inputValue: "",
