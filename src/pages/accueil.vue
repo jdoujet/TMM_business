@@ -9,7 +9,7 @@
            / Editeur
         </v-card-title>
         <v-spacer></v-spacer>
-        <v-btn @click="displayChoixPlanForm()">Choisir un Autre Plan</v-btn>
+        <v-btn @click="this.displayChoixPlanForm">Choisir un Autre Plan</v-btn>
         
       </v-row>
       
@@ -24,7 +24,7 @@
                       color="#4b548b"
                       icon
                       large
-                      @click="displayChoixPlanForm()"
+                      @click="this.displayChoixPlanForm"
                     >
                       <v-icon>mdi-close</v-icon>
                     </v-btn>
@@ -315,15 +315,15 @@
       
       <v-row id="modification_footer" style="padding: 1% 2% 0% 2%; background-color: #d5eff5; border-top: 5px solid #3B435F; ">
           <v-col cols="12" sm="8" md="9" lg="8" xl="10">
-            <v-card-text style="font-weight: bold; color: #4b548b; font-size: 22px; ">Modification du plan</v-card-text>
+            <v-card-text style="font-weight: bold; color: #4b548b; font-size: 25px; ">Modification du plan </v-card-text>
           </v-col>
           <v-spacer></v-spacer>
-          <v-col cols="12" sm="4" md="3" lg="2" xl="2" style="z-index:1">
+          <v-col v-if="this.displayAddForm || this.displayEditForm || this.displayDeleteForm" cols="12" sm="4" md="3" lg="2" xl="2" style="z-index:1;">
             <v-btn
               fab
               dark
               color="#4b548b"
-              @click="this.displayAddToMapForm()"
+              @click="this.displayAddElementToMapForm"
             >
               <v-icon dark>
                 mdi-plus
@@ -334,6 +334,7 @@
               dark
               color="#4b548b"
               style="margin-left:3%;"
+              @click="this.displayEditElementToMapForm"
             >
               <v-icon dark>
                 mdi-pencil
@@ -344,6 +345,7 @@
               dark
               color="#4b548b"
               style="margin-left:3%;"
+              @click="this.displayDeleteElementToMapForm"
             >
               <v-icon dark>
                 mdi-delete
@@ -351,23 +353,49 @@
             </v-btn>
           </v-col>
       </v-row>
-      <v-row style="padding: 2% 2% 2% 2%; background-color:#d5eff5; margin-left:1%">
-        
-        <v-col cols="12" sm="12" md="12" lg="4" xl="4">
+
+      <v-row v-if="this.displayAddForm" justify="center" style="background-color:#d5eff5;">
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" >
           <v-row>
-            <v-card-text style="font-size: 16px;">Nom rayon:</v-card-text>
+            <v-card-text style="font-size: 16px;">Ajouter element :</v-card-text>
+          </v-row>
+          <v-row>
+            <v-select
+              :items="this.listTypeElementForm"
+              item-text="text_type_rayon"
+              item-value="value_type_rayon"
+              label="Choisissez l'élément"
+              class="darkBlueInput"
+              solo
+              scrollable
+              persistent-hint
+              return-object
+              color="white"
+              style="margin-top:0%;"
+              v-on:change="this.changeDisplayAddForm"
+            ></v-select>
+          </v-row>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="this.displayAddForm && this.displayAddRayonForm" justify="center" style="padding: 0% 2% 2% 2%; background-color:#d5eff5;">
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" style="margin-left:4%; margin-right:10%">
+          <v-row>
+            <v-card-text style="font-size: 16px; ">Nom rayon :</v-card-text>
           </v-row>
           <v-row>
             <v-text-field
+            class="darkBlueInput"
             solo
             label="Rayon1_fruit"
             clearable
-            v-on:change="this.changePreSubmitNewRayonFormNomRayon"
+            color="white"
+            @input="this.changePreSubmitNewRayonFormNomRayon"
             ></v-text-field>
           </v-row>
         </v-col>
 
-        <v-col cols="12" sm="12" md="12" lg="4" xl="4" style="margin-left : 10%">
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" style="margin-left:-12px">
           <v-row>
             <v-card-text style="font-size: 16px;">Type de rayon :</v-card-text>
           </v-row>
@@ -377,21 +405,21 @@
               item-text="text_type_rayon"
               item-value="value_type_rayon"
               label="Choisissez le type du rayon"
+              class="darkBlueInput"
               solo
+              scrollable
               persistent-hint
               return-object
+              color="white"
               style="margin-top:0%;"
               v-on:change="this.changePreSubmitNewRayonFormTypeRayon"
             ></v-select>
           </v-row>
         </v-col>
-
-
-
       </v-row>
-      <v-row style="padding: 0% 0% 0% 2%; margin-top:-3%; background-color:#d5eff5; margin-left:1%">
+      <v-row v-if="this.displayAddForm && this.displayAddRayonForm" justify="center" style="padding: 0% 0% 0% 2%; margin-top:-3%; background-color:#d5eff5; margin-left:1%;">
 
-        <v-col cols="12" sm="12" md="12" lg="4" xl="4" >
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" >
           <v-row>
             <v-card-text style="font-size: 16px;">Coordonnée X :</v-card-text>
           </v-row>
@@ -400,14 +428,16 @@
             type="number"
             solo
             label="ex:100"
+            class="darkBlueInput"
             clearable
+            color="white"
             v-on:change="this.changePreSubmitNewRayonFormCoordonneesX"
             ></v-text-field>
           </v-row>
           
         </v-col>
 
-        <v-col cols="12" sm="12" md="12" lg="4" xl="4" style="margin-left : 9%">
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" style="margin-left : 9%">
           <v-row>
             <v-card-text style="font-size: 16px;">Coordonnée Y :</v-card-text>
           </v-row>
@@ -416,39 +446,17 @@
               type="number"
               solo
               label="ex:100"
+              class="darkBlueInput"
               clearable
+              color="white"
               v-on:change="this.changePreSubmitNewRayonFormCoordonneesY"
             ></v-text-field>
           </v-row>
         </v-col>
-
-        <v-spacer></v-spacer>
-
-        <v-col cols="12" sm="12" md="12" lg="2" xl="2" style="margin-right:3%">
-          <v-row  >
-            <v-btn
-                  color="#4b548b"
-                  dark
-                  x-large
-                  @click="this.addRayonToPlan"
-                >
-                  Ajouter au Plan
-              </v-btn>
-              <v-btn
-                  color="#4b548b"
-                  dark
-                  x-large
-                  @click="this.deleteRayon"
-                >
-                  Supprimer du Plan
-              </v-btn>
-          </v-row>
-        </v-col>
-
       </v-row>
 
-      <v-row style="padding: 0% 0% 0% 2%; background-color:#d5eff5; margin-left:1%">
-        <v-col cols="12" sm="12" md="12" lg="4" xl="4" >
+      <v-row v-if="this.displayAddForm && this.displayAddRayonForm" justify="center" style="padding: 0% 0% 0% 2%; background-color:#d5eff5; margin-left:1%;">
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4">
           <v-row>
             <v-card-text style="font-size: 16px;">Longueur :</v-card-text>
           </v-row>
@@ -457,13 +465,15 @@
               type="number"
               solo
               label="ex:100"
+              class="darkBlueInput"
               clearable
+              color="white"
               v-on:change="this.changePreSubmitNewRayonFormLongueur"
             ></v-text-field>
           </v-row>
         </v-col>
 
-        <v-col cols="12" sm="12" md="12" lg="4" xl="4" style="margin-left : 9%">
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" style="margin-left : 9%">
           <v-row>
             <v-card-text style="font-size: 16px;">Largeur :</v-card-text>
           </v-row>
@@ -472,13 +482,576 @@
               type="number"
               solo
               label="ex:100"
+              class="darkBlueInput"
               clearable
+              color="white"
               v-on:change="this.changePreSubmitNewRayonFormLargeur"
             ></v-text-field>
           </v-row>
         </v-col>
 
       </v-row>
+
+
+      <v-row v-if="this.displayAddForm && this.displayAddEntreeForm" justify="center" style="padding: 0% 2% 2% 2%; background-color:#d5eff5; margin-left:1%;">
+
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" >
+          <v-row>
+            <v-card-text style="font-size: 16px;">Coordonnée X :</v-card-text>
+          </v-row>
+          <v-row>
+            <v-text-field
+            type="number"
+            solo
+            label="ex:100"
+            class="darkBlueInput"
+            clearable
+            color="white"
+            v-on:change="this.changePreSubmitNewEntreeFormCoordonneesX"
+            ></v-text-field>
+          </v-row>
+          
+        </v-col>
+
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" style="margin-left : 9%">
+          <v-row>
+            <v-card-text style="font-size: 16px;">Coordonnée Y :</v-card-text>
+          </v-row>
+          <v-row>
+            <v-text-field
+              type="number"
+              solo
+              label="ex:100"
+              class="darkBlueInput"
+              clearable
+              color="white"
+              v-on:change="this.changePreSubmitNewEntreeFormCoordonneesY"
+            ></v-text-field>
+          </v-row>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="this.displayAddForm && this.displayAddEntreeForm" justify="center" style="padding: 0% 0% 0% 2%; background-color:#d5eff5; margin-left:1%;">
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4">
+          <v-row>
+            <v-card-text style="font-size: 16px;">Longueur :</v-card-text>
+          </v-row>
+          <v-row>
+            <v-text-field
+              type="number"
+              solo
+              label="ex:100"
+              class="darkBlueInput"
+              clearable
+              color="white"
+              v-on:change="this.changePreSubmitNewEntreeFormLongueur"
+            ></v-text-field>
+          </v-row>
+        </v-col>
+      
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" style="margin-left : 9%">
+          <v-row>
+            <v-card-text style="font-size: 16px;">Largeur :</v-card-text>
+          </v-row>
+          <v-row>
+            <v-text-field
+              type="number"
+              solo
+              label="ex:100"
+              class="darkBlueInput"
+              clearable
+              color="white"
+              v-on:change="this.changePreSubmitNewEntreeFormLargeur"
+            ></v-text-field>
+          </v-row>
+        </v-col>
+
+      </v-row>
+
+      <v-row v-if="this.displayAddForm && this.displayAddRayonForm" justify="center" style="margin-top:3%; margin-bottom:3%">
+            <v-btn
+                  color="#4b548b"
+                  rounded
+                  dark
+                  x-large
+                  @click="this.addRayonToPlan"
+                >
+                  Ajouter au Plan
+              </v-btn>
+      </v-row>
+
+      <v-row v-if="this.displayAddForm && this.displayAddEntreeForm" justify="center" style="margin-top:3%; margin-bottom:3%">
+            <v-btn
+                  color="#4b548b"
+                  rounded
+                  dark
+                  x-large
+                  @click="this.addEntreeToPlan"
+                >
+                  Ajouter au Plan
+              </v-btn>
+      </v-row>
+
+      <v-row v-if="this.displayEditForm" justify="center" style="background-color:#d5eff5;">
+         <v-col cols="8" sm="8" md="4" lg="4" xl="4" >
+          <v-row>
+            <v-card-text style="font-size: 16px;">Type d'élément à modifier:</v-card-text>
+          </v-row>
+          <v-row>
+            <v-select
+              :items="this.listTypeElementForm"
+              label="Choisissez le type"
+              class="darkBlueInput"
+              solo
+              scrollable
+              persistent-hint
+              return-object
+              color="white"
+              style="margin-top:0%;"
+              v-on:change="this.changeTypeElementForm"
+            ></v-select>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row v-if="this.displayEditForm && this.listElementToEditForm.length!=0" justify="center" style="background-color:#d5eff5;">
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" >
+          <v-row>
+            <v-card-text style="font-size: 16px;">Element à modifier:</v-card-text>
+          </v-row>
+          <v-row>
+            <v-select
+              :items="this.listElementToEditForm"
+              :item-text="item =>`${item.type} ${item.id}`"
+              :item_value="item =>`${item.value}`"
+              label="Choisissez l'élément"
+              class="darkBlueInput"
+              solo
+              persistent-hint
+              return-object
+              color="white"
+              style="margin-top:0%;"
+              v-on:change="this.loadElementToEditForm"
+            ></v-select>
+          </v-row>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="this.displayEditForm && this.displayTypeElementFormRayon && this.displayEditRayonForm && this.displayEditTypeRayonForm==true" justify="center" style="padding: 0% 2% 2% 2%; background-color:#d5eff5;"> 
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" style="margin-left:4%; margin-right:10%">
+          <v-row>
+            <v-card-text style="font-size: 16px; ">Nom rayon :</v-card-text>
+          </v-row>
+          <v-row>
+            <v-text-field
+            :value="this.jsonSubmitEditRayonForm.nom_rayon"
+            class="darkBlueInput"
+            solo
+            label="Rayon1_fruit"
+            clearable
+            color="white"
+            @input="this.changeSubmitEditRayonFormNomRayon"
+            ></v-text-field>
+          </v-row>
+        </v-col>
+
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" style="margin-left:-12px">
+          <v-row>
+            <v-card-text style="font-size: 16px;">Type de rayon :</v-card-text>
+          </v-row>
+          <v-row>
+            <v-select
+              :value="this.selectEditTypeRayonForm"
+              :items="this.listTypeRayonForm"
+              item-text="text_type_rayon"
+              item-value="value_type_rayon"
+              class="darkBlueInput"
+              label="Type du rayon"
+              solo
+              persistent-hint
+              return-object
+              color="white"
+              
+              
+              @input="this.changeSubmitEditRayonFormTypeRayon"
+            ><!--@input="this.changeSubmitEditRayonFormTypeRayon"--></v-select>
+          </v-row>
+        </v-col>
+
+      </v-row>
+      <v-row v-if="this.displayEditForm && this.displayTypeElementFormRayon && this.displayEditRayonForm && this.displayEditTypeRayonForm==false" justify="center" style="padding: 0% 2% 2% 2%; background-color:#d5eff5;"> 
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" style="margin-left:4%; margin-right:10%">
+          <v-row>
+            <v-card-text style="font-size: 16px; ">Nom rayon :</v-card-text>
+          </v-row>
+          <v-row>
+            <v-text-field
+            :value="this.jsonSubmitEditRayonForm.nom_rayon"
+            class="darkBlueInput"
+            solo
+            label="Rayon1_fruit"
+            clearable
+            color="white"
+            @input="this.changeSubmitEditRayonFormNomRayon"
+            ></v-text-field>
+          </v-row>
+        </v-col>
+       
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" style="margin-left:-12px">
+          <v-row>
+            <v-card-text style="font-size: 16px;">Type de rayon :</v-card-text>
+          </v-row>
+          <v-row>
+            <v-select
+              :value="this.modelChangeSubmitEditRayonFormTypeRayon"
+              :items="this.listTypeRayonForm"
+              item-text="text_type_rayon"
+              item-value="value_type_rayon"
+              class="darkBlueInput"
+              label="Type du rayon"
+              solo
+              persistent-hint
+              return-object
+              color="white"
+             
+              @input="this.changeSubmitEditRayonFormTypeRayon"
+            ></v-select><!--@input="this.changeSubmitEditRayonFormTypeRayon"-->
+            
+          </v-row>
+        </v-col>
+        </v-row>
+        
+
+
+      <v-row v-if="this.displayEditForm && this.displayTypeElementFormRayon && this.displayEditRayonForm" justify="center" style="padding: 0% 0% 0% 2%; margin-top:-3%; background-color:#d5eff5; margin-left:1%;">
+
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" >
+          <v-row>
+            <v-card-text style="font-size: 16px;">Coordonnée X :</v-card-text>
+          </v-row>
+          <v-row>
+            <v-text-field
+            :value="this.submitEditRayonFormCoordonnees.x"
+            type="number"
+            solo
+            label="ex:100"
+            class="darkBlueInput"
+            clearable
+            color="white"
+            @input="this.changeSubmitEditRayonFormCoordonneeX"
+            ></v-text-field>
+          </v-row>
+          
+        </v-col>
+
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" style="margin-left : 9%">
+          <v-row>
+            <v-card-text style="font-size: 16px;">Coordonnée Y :</v-card-text>
+          </v-row>
+          <v-row>
+            <v-text-field
+              :value="this.submitEditRayonFormCoordonnees.y"
+              type="number"
+              solo
+              label="ex:100"
+              class="darkBlueInput"
+              clearable
+              color="white"
+              @input="this.changeSubmitEditRayonFormCoordonneeY"
+            ></v-text-field>
+          </v-row>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="this.displayEditForm && this.displayTypeElementFormRayon && this.displayEditRayonForm" justify="center" style="padding: 0% 0% 0% 2%; background-color:#d5eff5; margin-left:1%;">
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4">
+          <v-row>
+            <v-card-text style="font-size: 16px;">Longueur :</v-card-text>
+          </v-row>
+          <v-row>
+            <v-text-field
+              :value="this.jsonSubmitEditRayonForm.longueur"
+              type="number"
+              solo
+              label="ex:100"
+              class="darkBlueInput"
+              clearable
+              color="white"
+              @input="this.changeSubmitEditRayonFormLongueur"
+            ></v-text-field>
+          </v-row>
+        </v-col>
+
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" style="margin-left : 9%">
+          <v-row>
+            <v-card-text style="font-size: 16px;">Largeur :</v-card-text>
+          </v-row>
+          <v-row>
+            <v-text-field
+              :value="this.jsonSubmitEditRayonForm.largeur"
+              type="number"
+              solo
+              label="ex:100"
+              class="darkBlueInput"
+              clearable
+              color="white"
+              @input="this.changeSubmitEditRayonFormLargeur"
+            ></v-text-field>
+          </v-row>
+        </v-col>
+
+      </v-row>
+
+
+      <v-row v-if="this.displayEditForm && this.displayTypeElementFormEntree && this.displayEditEntreeForm" justify="center" style="padding: 0% 2% 2% 2%; background-color:#d5eff5; margin-left:1%;">
+
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" >
+          <v-row>
+            <v-card-text style="font-size: 16px;">Coordonnée X :</v-card-text>
+          </v-row>
+          <v-row>
+            <v-text-field
+            :value="this.submitEditEntreeFormCoordonnees.x"
+            type="number"
+            solo
+            label="ex:100"
+            class="darkBlueInput"
+            clearable
+            color="white"
+            @input="this.changeSubmitEditEntreeFormCoordonneeX"
+            ></v-text-field>
+          </v-row>
+          
+        </v-col>
+
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" style="margin-left : 9%">
+          <v-row>
+            <v-card-text style="font-size: 16px;">Coordonnée Y :</v-card-text>
+          </v-row>
+          <v-row>
+            <v-text-field
+              :value="this.submitEditEntreeFormCoordonnees.y"
+              type="number"
+              solo
+              label="ex:100"
+              class="darkBlueInput"
+              clearable
+              color="white"
+              @input="this.changeSubmitEditEntreeFormCoordonneeY"
+            ></v-text-field>
+          </v-row>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="this.displayEditForm && this.displayTypeElementFormEntree && this.displayEditEntreeForm" justify="center" style="padding: 0% 0% 0% 2%; background-color:#d5eff5; margin-left:1%;">
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4">
+          <v-row>
+            <v-card-text style="font-size: 16px;">Longueur :</v-card-text>
+          </v-row>
+          <v-row>
+            <v-text-field
+              :value="this.jsonSubmitEditEntreeForm.longueur"
+              type="number"
+              solo
+              label="ex:100"
+              class="darkBlueInput"
+              clearable
+              color="white"
+              @input="this.changeSubmitEditEntreeFormLongueur"
+            ></v-text-field>
+          </v-row>
+        </v-col>
+      
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" style="margin-left : 9%">
+          <v-row>
+            <v-card-text style="font-size: 16px;">Largeur :</v-card-text>
+          </v-row>
+          <v-row>
+            <v-text-field
+              :value="this.jsonSubmitEditEntreeForm.largeur"
+              type="number"
+              solo
+              label="ex:100"
+              class="darkBlueInput"
+              clearable
+              color="white"
+              @input="this.changeSubmitEditEntreeFormLargeur"
+            ></v-text-field>
+          </v-row>
+        </v-col>
+
+      </v-row>
+
+      <v-row v-if="this.displayEditForm && this.displayTypeElementFormRayon && this.displayEditRayonForm" justify="center" style="margin-top:3%; margin-bottom:3%">
+            <v-btn
+                  color="#4b548b"
+                  rounded
+                  dark
+                  x-large
+                  @click="this.editRayonToPlanForm"
+                >
+                  Enregistrer les modifications
+              </v-btn>
+      </v-row>
+
+      <v-row v-if="this.displayEditForm && this.displayTypeElementFormEntree && this.displayEditEntreeForm" justify="center" style="margin-top:3%; margin-bottom:3%">
+            <v-btn
+                  color="#4b548b"
+                  rounded
+                  dark
+                  x-large
+                  @click="this.editEntreeToPlanForm"
+                >
+                  Enregistrer les modifications
+              </v-btn>
+      </v-row>
+
+    <v-row v-if="this.displayDeleteForm" justify="center" style="background-color:#d5eff5;">
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" >
+          <v-row>
+            <v-card-text style="font-size: 16px;">Type d'élément à supprimer:</v-card-text>
+          </v-row>
+          <v-row>
+            <v-select
+              :items="this.listTypeElementForm"
+              label="Choisissez le type"
+              class="darkBlueInput"
+              solo
+              scrollable
+              persistent-hint
+              return-object
+              color="white"
+              style="margin-top:0%;"
+              v-on:change="this.changeTypeElementForm"
+            ></v-select>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row v-if="this.displayDeleteForm" justify="center" style="background-color:#d5eff5;">
+        <v-col cols="8" sm="8" md="4" lg="4" xl="4" >
+          <v-row>
+            <v-card-text style="font-size: 16px;">Element à supprimer:</v-card-text>
+          </v-row>
+          <v-row>
+            <v-select
+              :items="this.listElementToEditForm"
+              :item-text="item =>`${item.type} ${item.id}`"
+              :item_value="item =>`${item.value}`"
+              label="Choisissez l'élément"
+              class="darkBlueInput"
+              solo
+              persistent-hint
+              return-object
+              color="white"
+              style="margin-top:0%;"
+              v-on:change="this.loadElementToDeleteForm"
+            ></v-select>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row v-if="this.displayDeleteForm && this.displayTypeElementFormRayon" justify="center" style="margin-top:3%; margin-bottom:3%">
+        <v-btn
+          color="#4b548b"
+          rounded
+          dark
+          x-large 
+          @click="this.deleteRayonOfPlan"
+        >
+          Supprimer du plan
+        </v-btn>
+      </v-row>
+
+      <v-row v-if="this.displayDeleteForm && this.displayTypeElementFormEntree" justify="center" style="margin-top:3%; margin-bottom:3%">
+            <v-btn
+                  color="#4b548b"
+                  rounded
+                  dark
+                  x-large 
+                  @click="this.deleteEntreeOfPlan"
+                >
+                  Supprimer du plan
+              </v-btn>
+      </v-row>
+
+    <v-row v-if="!this.displayAddForm && !this.displayEditForm && !this.displayDeleteForm" justify="center" style="margin-top:5%">
+      <v-col cols="12" sm="12" md="12" lg="4" xl="4">
+        <v-row justify="center">
+          <v-avatar size="205" color="#4b548b">
+            <v-avatar size="200" color="white" >
+              <v-avatar icon size = "190" color="#4b548b">
+                <v-icon size = "70" color="white">mdi-shape-plus</v-icon>
+              </v-avatar>
+            </v-avatar>
+          </v-avatar>
+          
+        
+        </v-row>
+
+        <v-row justify="center" style="margin-top:7%; margin-bottom:5%;">
+          
+          <v-btn
+            color="#4b548b"
+            x-large
+            style="color:white"
+            @click="this.displayAddElementToMapForm"
+          >
+            Ajouter un element
+          </v-btn>
+        </v-row>
+      </v-col>
+
+      <v-col cols="12" sm="12" md="12" lg="4" xl="4">
+        <v-row justify="center">
+          <v-avatar size="205" color="#4b548b">
+            <v-avatar size="200" color="white" >
+              <v-avatar icon size = "190" color="#4b548b">
+                <v-icon size = "70" color="white">mdi-view-dashboard-edit-outline</v-icon>
+              </v-avatar>
+            </v-avatar>
+          </v-avatar>
+          
+        
+        </v-row>
+
+        <v-row justify="center" style="margin-top:7%; margin-bottom:5%;">
+          
+          <v-btn
+            color="#4b548b"
+            x-large
+            style="color:white"
+            @click="this.displayEditElementToMapForm"
+          >
+            Modifier un element
+          </v-btn>
+        </v-row>
+      </v-col>
+
+      <v-col cols="12" sm="12" md="12" lg="4" xl="4">
+        <v-row justify="center">
+          <v-avatar size="205" color="#4b548b">
+            <v-avatar size="200" color="white" >
+              <v-avatar icon size = "190" color="#4b548b">
+                <v-icon size = "70" color="white">mdi-delete-variant</v-icon>
+              </v-avatar>
+            </v-avatar>
+          </v-avatar>
+          
+        
+        </v-row>
+
+        <v-row justify="center" style="margin-top:7%; margin-bottom:5%;">
+          
+          <v-btn
+            color="#4b548b"
+            x-large
+            style="color:white"
+            @click="this.displayDeleteElementToMapForm"
+          >
+            Supprimer un element
+          </v-btn>
+        </v-row>
+      </v-col>
+    </v-row>
+    <v-row style="margin-bottom:8%"></v-row>
 
       <!--<div class="center mt-15" style="background-color: black">
         <v-card>
@@ -851,6 +1424,7 @@ class Entree extends Rectangle{
 export default {
   name: "accueil",
   //cnv : document.getElementById('idblock'),
+
   mounted() {
         //this.panzoom = Panzoom(document.getElementById('panzoom-element'), {
         //    maxScale: 5
@@ -887,6 +1461,66 @@ export default {
       
 
     },
+
+  /*computed:{
+    selectEditTypeRayonFormComputed: function () {
+      return this.selectEditTypeRayonForm
+    }
+  },*/
+  props:{
+    
+  },
+  computed:{
+     modelChangeSubmitEditRayonFormTypeRayon: {
+        get(){
+          return this.jsonSubmitEditRayonForm.type_rayon
+        },
+        set(value_type_rayon){
+          this.jsonSubmitEditRayonForm.type_rayon=value_type_rayon.type_rayon
+        }
+     }
+    //modelChangeSubmitEditRayonFormTypeRayon() {
+     
+    //    return this.jsonSubmitEditRayonForm.type_rayon
+     
+        //console.log('value',value)
+        /*this.jsonSubmitEditRayonForm.type_rayon=value.value_type_rayon.type_rayon
+        this.jsonSubmitEditRayonForm.image_rayon=value.value_type_rayon.image_rayon*/
+      
+    //},
+  },
+
+    watch: {
+
+        //console.log('value',value)
+        /*this.jsonSubmitEditRayonForm.type_rayon=value.value_type_rayon.type_rayon
+        this.jsonSubmitEditRayonForm.image_rayon=value.value_type_rayon.image_rayon*/
+      
+      
+  },
+
+    /*modelChangeSubmitEditRayonFormTypeRayon2: {
+      get(){
+        return this.jsonSubmitEditRayonForm.type_rayon
+      }
+    }*/
+
+    
+    
+      /*set(type_rayon){
+        this.selectEditTypeRayonForm.text_type_rayon=type_rayon.value_type_rayon.type_rayon+" / "+type_rayon.value_type_rayon.image_rayon.split(".")[0]
+        this.selectEditTypeRayonForm.value_type_rayon.type_rayon=type_rayon.value_type_rayon.type_rayon
+        this.selectEditTypeRayonForm.value_type_rayon.image_rayon=type_rayon.value_type_rayon.image_rayon
+
+        this.jsonSubmitEditRayonForm.type_rayon=type_rayon.value_type_rayon.type_rayon
+        this.jsonSubmitEditRayonForm.image_rayon=type_rayon.value_type_rayon.image_rayon
+      }*/
+      
+      
+  
+    
+  
+  
   /*async created() {
       this.beacons = await this.getBeaconByIdPlanAndIdUser
   },*/
@@ -1307,45 +1941,70 @@ export default {
         .then((response) => (this.plans = response.data));
     },
 
-    getRayonByIdPlanAndIdUser : function () {
-        axios
+    getRayonByIdPlanAndIdUser : async function () {
+        try{
+        let response = await axios
           .get(
             "https://tmmbusiness-back.herokuapp.com/utilisateur/"+
               this.selectedIdUser+"/plan/"+
               this.selectedIdPlan+"/rayon"
           )
-          .then((response) => (this.rayons = response.data));
+          this.rayons = response.data;
+        }
+        catch(err){
+          console.log(err);
+        }
+        return this.rayons;
           
     },
 
-    getBeaconByIdPlanAndIdUser : function () {
-      axios
-        .get(
+    getBeaconByIdPlanAndIdUser : async function () {
+      try{
+        let response = await axios
+         .get(
           "https://tmmbusiness-back.herokuapp.com/utilisateur/"+
           this.selectedIdUser+"/plan/"+
           this.selectedIdPlan+"/beacon"
         )
-        .then((response) => (this.beacons = response.data));
+        this.beacons = response.data;
+      }
+      catch(err){
+        console.log(err);
+      }
+      return this.beacons;
       
     },
 
-    getEntreeByIdPlanAndIdUser : function () {
-      axios
+    getEntreeByIdPlanAndIdUser : async function () {
+      try{
+        let response = await axios
         .get(
           "https://tmmbusiness-back.herokuapp.com/utilisateur/"+
             this.selectedIdUser+"/plan/"+
             this.selectedIdPlan+"/entree"
         )
-        .then((response) => (this.entrees = response.data));
+        this.entrees = response.data;
+      }
+      catch(err){
+        console.log(err);
+      }
+      return this.entrees;
     },
 
-    getArticlePhareAndIdRayonByIdSupermarche : function () {
-      axios
-        .get(
-          "https://tmmbusiness-back.herokuapp.com/supermarche/"+
-            this.selectedIdSupermarche+"/rayon/article_phare"
-        )
-        .then((response) => (this.articles_phares = response.data));
+    getArticlePhareAndIdRayonByIdSupermarche : async function () {
+      try{
+        let response = await axios
+          .get(
+            "https://tmmbusiness-back.herokuapp.com/supermarche/"+
+              this.selectedIdSupermarche+"/rayon/article_phare"
+          )
+
+        this.articles_phares = response.data;
+      }
+      catch(err){
+        console.log(err);
+      }
+      return this.articles_phares;
     },
 
     
@@ -1373,7 +2032,31 @@ export default {
       
     },
 
-    createAssociationBetweenRayonAndPlan(){
+    callCreateEntree : async function() {
+       try{
+        let response = await axios
+          .post(
+            "https://tmmbusiness-back.herokuapp.com/entree", 
+            this.jsonSubmitNewEntreeForm,
+              {
+                headers: { 
+                  'Content-Type' : 'application/json' 
+                }
+              }
+          )
+          console.log(response,"response")
+          this.jsonAssociateEntreeAndPlan.id_entree=response.data
+          
+       }
+       catch(err){
+        console.log(err)
+       }
+       return this.jsonAssociateEntreeAndPlan.id_entree;
+        //console.log("test associated", this.jsonAssociateRayonAndPlan)
+      
+    },
+
+    createAssociationBetweenRayonAndPlan : function() {
       axios
         .post(
           "https://tmmbusiness-back.herokuapp.com/rayon/plan",
@@ -1389,29 +2072,134 @@ export default {
         });
     },
 
-    deleteRayon(){
+    createAssociationBetweenEntreeAndPlan : function() {
       axios
-        .delete(
-          "https://tmmbusiness-back.herokuapp.com/rayon/"+
-          this.deleteIdRayon,
+        .post(
+          "https://tmmbusiness-back.herokuapp.com/entree/plan",
+          this.jsonAssociateEntreeAndPlan,
             {
               headers: { 
                 'Content-Type' : 'application/json' 
               }
             }
         ).then((response) => {
-            console.log(alert(response.data));
+            console.log(alert(response));
+             
+        });
+    },
+
+    callEditRayon: function() {
+        axios
+        .put(
+          "https://tmmbusiness-back.herokuapp.com/rayon/"+this.selectedEditId,
+          this.jsonSubmitEditRayonForm,
+            {
+              headers: { 
+               'Content-Type' : 'application/json' 
+              }
+            }
+        ).then((response) => {
+            console.log(alert(response));
+             
+        });
+    },
+
+    callEditEntree: function() {
+        axios
+        .put(
+          "https://tmmbusiness-back.herokuapp.com/entree/"+this.selectedEditId,
+          this.jsonSubmitEditEntreeForm,
+            {
+              headers: { 
+               'Content-Type' : 'application/json' 
+              }
+            }
+        ).then((response) => {
+            console.log(alert(response));
              
         });
     },
 
 
+    callDeleteRayon : async function() {
+      let responseReturned
+      try{
+        let response = await axios
+          .delete(
+            "https://tmmbusiness-back.herokuapp.com/rayon/"+
+              this.selectedDeleteId
+
+          )
+          responseReturned = response.data
+        }
+        catch(err){
+        console.log(err);
+        }
+        return responseReturned;
+    },
+
+
+    callDeleteEntree : async function() {
+       let responseReturned
+       try{
+        let response = await axios
+          .delete(
+            "https://tmmbusiness-back.herokuapp.com/entree/"+
+              this.selectedDeleteId
+
+          )
+          responseReturned=response.data
+       }
+      catch(err){
+      console.log(err);
+      }
+      return responseReturned;
+        
+
+    },
+
+    deleteAssociationBetweenRayonAndPlan : async function() {
+      let responseReturned
+      try{
+        let response = await axios
+     
+        .delete(
+          "https://tmmbusiness-back.herokuapp.com/rayon/"+
+          this.selectedDeleteId+"/plan/"+this.plan.id
+          
+          )
+          responseReturned=response.data
+       }
+      catch(err){
+      console.log(err);
+      }
+      return responseReturned;
+    },
+
+    deleteAssociationBetweenEntreeAndPlan : async function() {
+      let responseReturned
+      try{
+        let response = await axios
+     
+        .delete(
+          "https://tmmbusiness-back.herokuapp.com/entree/"+
+          this.selectedDeleteId+"/plan/"+this.plan.id
+          
+          )
+          responseReturned=response.data
+       }
+      catch(err){
+      console.log(err);
+      }
+      return responseReturned;
+    },
+
     async loadPlan(){
       
-      this.getBeaconByIdPlanAndIdUser();
-      this.getRayonByIdPlanAndIdUser();
-      this.getEntreeByIdPlanAndIdUser();
-      this.getArticlePhareAndIdRayonByIdSupermarche();
+      await this.getBeaconByIdPlanAndIdUser();
+      await this.getRayonByIdPlanAndIdUser();
+      await this.getEntreeByIdPlanAndIdUser();
+      await this.getArticlePhareAndIdRayonByIdSupermarche();
 
       for(let i=0; i<this.utilisateurs.length; i++){
         if(this.utilisateurs[i].id_user==this.selectedIdUser){
@@ -1438,14 +2226,14 @@ export default {
       //this.initNewMap=true
       this.reDrawingCanva();
       //this.initNewMap=false
-      this.cpt++;
-      if(this.beacons.length!=0 && this.rayons.length!=0 && this.entrees.length!=0 && this.cpt>=2){
-        if(this.activeRayonDetails){
-          this.closeLayoutDetails();
-        }
-        this.displayChoixPlanForm();
-        this.cpt=0;
+      //this.cpt++;
+      //if(this.beacons.length!=0 && this.rayons.length!=0 && this.entrees.length!=0 && this.cpt>=2){
+      if(this.activeRayonDetails){
+        this.closeLayoutDetails();
       }
+        this.displayChoixPlanForm();
+       // this.cpt=0;
+      //}
       console.log(this.rayons)
 
     },
@@ -1525,6 +2313,38 @@ export default {
         }
       }
     },
+
+    displayAddElementToMapForm(){
+      this.displayAddForm=true;
+      this.displayEditForm=false;
+      this.displayDeleteForm=false;
+    },
+
+    displayEditElementToMapForm(){
+      this.displayAddForm=false;
+      this.displayEditForm=true;
+      this.displayDeleteForm=false;
+    },
+
+    displayDeleteElementToMapForm(){
+      this.displayAddForm=false;
+      this.displayEditForm=false;
+      this.displayDeleteForm=true;
+    },
+
+    changeDisplayAddForm(element){    
+      if(this.plan!=[]){
+        if(element=="rayon"){
+          this.displayAddRayonForm=true
+          this.displayAddEntreeForm=false
+        }
+        else if(element=="entree"){
+          this.displayAddRayonForm=false
+          this.displayAddEntreeForm=true
+        }
+      }
+    },
+
     changePreSubmitNewRayonFormNomRayon(nom){
       this.preSubmitNewRayonForm.nom_rayon=nom
     },
@@ -1540,32 +2360,215 @@ export default {
       this.preSubmitNewRayonForm.coordonnees=this.preSubmitNewRayonFormCoordonneesX+";"+this.preSubmitNewRayonFormCoordonneesY
     },
 
+    changePreSubmitNewEntreeFormCoordonneesX(x){
+      this.preSubmitNewEntreeFormCoordonneesX= ""+x
+      this.preSubmitNewEntreeForm.coordonnees=this.preSubmitNewEntreeFormCoordonneesX+";"+this.preSubmitNewEntreeFormCoordonneesY
+    },
+
     changePreSubmitNewRayonFormCoordonneesY(y){
       this.preSubmitNewRayonFormCoordonneesY= ""+y
       this.preSubmitNewRayonForm.coordonnees=this.preSubmitNewRayonFormCoordonneesX+";"+this.preSubmitNewRayonFormCoordonneesY
+    },
+
+    changePreSubmitNewEntreeFormCoordonneesY(y){
+      this.preSubmitNewEntreeFormCoordonneesY= ""+y
+      this.preSubmitNewEntreeForm.coordonnees=this.preSubmitNewEntreeFormCoordonneesX+";"+this.preSubmitNewEntreeFormCoordonneesY
     },
 
     changePreSubmitNewRayonFormLargeur(largeur){
       this.preSubmitNewRayonForm.largeur=largeur
     },
 
+    changePreSubmitNewEntreeFormLargeur(largeur){
+      this.preSubmitNewEntreeForm.largeur=largeur
+    },
+
     changePreSubmitNewRayonFormLongueur(longueur){
       this.preSubmitNewRayonForm.longueur=longueur
+    },
+
+    changePreSubmitNewEntreeFormLongueur(longueur){
+      this.preSubmitNewEntreeForm.longueur=longueur
+    },
+
+    changeSubmitEditRayonFormCoordonneeX(x){
+      this.submitEditRayonFormCoordonnees.x=x
+    },
+
+    changeSubmitEditRayonFormCoordonneeY(y){
+      this.submitEditRayonFormCoordonnees.y=y
+    },
+
+    changeSubmitEditRayonFormLongueur(longueur){
+      this.jsonSubmitEditRayonForm.longueur=parseInt(longueur)
+    },
+
+    changeSubmitEditRayonFormLargeur(largeur){
+      this.jsonSubmitEditRayonForm.largeur=parseInt(largeur)
+    },
+
+    changeSubmitEditEntreeFormCoordonneeX(x){
+      this.submitEditEntreeFormCoordonnees.x=x
+    },
+
+    changeSubmitEditEntreeFormCoordonneeY(y){
+      this.submitEditEntreeFormCoordonnees.y=y
+    },
+
+    changeSubmitEditEntreeFormLongueur(longueur){
+      this.jsonSubmitEditEntreeForm.longueur=parseInt(longueur)
+    },
+
+    changeSubmitEditEntreeFormLargeur(largeur){
+      this.jsonSubmitEditEntreeForm.largeur=parseInt(largeur)
+    },
+
+    changeTypeElementForm(element){
+      this.listElementToEditForm=[]
+      
+      if(element=="rayon"){
+        for(let i=0; i<this.rayons.length; i++){
+          this.listElementToEditForm.push({type: "rayon", id: this.rayons[i].id_rayon, value:{nom_rayon: this.rayons[i].nom_rayon, type_rayon: this.rayons[i].type_rayon, longueur: this.rayons[i].longueur, largeur: this.rayons[i].largeur, image_rayon: this.rayons[i].image_rayon, coordonnees: this.rayons[i].coordonnees}})
+        }
+        this.displayTypeElementFormRayon=true
+        this.displayTypeElementFormEntree=false
+      }
+      else if (element=="entree"){
+        for(let i=0; i<this.entrees.length; i++){
+          this.listElementToEditForm.push({type: "entree", id: this.entrees[i].id_entree, value:{longueur: this.entrees[i].longueur, largeur: this.entrees[i].largeur, coordonnees: this.entrees[i].coordonnees}})
+        }
+        this.displayTypeElementFormRayon=false
+        this.displayTypeElementFormEntree=true
+      }
+
+    },
+
+    changeSubmitEditRayonFormNomRayon(nom_rayon){
+      console.log("nom_rayon",nom_rayon)
+      this.jsonSubmitEditRayonForm.nom_rayon=nom_rayon
+    },
+
+    changeSubmitEditRayonFormTypeRayon(type_rayon){
+      this.selectEditTypeRayonForm.text_type_rayon=type_rayon.value_type_rayon.type_rayon+" / "+type_rayon.value_type_rayon.image_rayon.split(".")[0]
+      this.selectEditTypeRayonForm.value_type_rayon.type_rayon=type_rayon.value_type_rayon.type_rayon
+      this.selectEditTypeRayonForm.value_type_rayon.image_rayon=type_rayon.value_type_rayon.image_rayon
+
+      this.jsonSubmitEditRayonForm.type_rayon=type_rayon.value_type_rayon.type_rayon
+      this.jsonSubmitEditRayonForm.image_rayon=type_rayon.value_type_rayon.image_rayon
+      //this.jsonSubmitEditRayonForm.type_rayon=
+      this.modelChangeSubmitEditRayonFormTypeRayon
+      //return this.modelChangeSubmitEditRayonFormTypeRayon
+    },
+
+
+    loadElementToEditForm(element){
+      this.displayEditRayonForm=false
+      this.displayEditEntreeForm=false
+      if (element != null){
+        if(this.listElementToEditForm[0].type=="rayon"){
+          this.selectEditTypeRayonForm.text_type_rayon=element.value.type_rayon+" / "+element.value.image_rayon.split(".")[0]
+          this.selectEditTypeRayonForm.value_type_rayon.type_rayon=element.value.type_rayon
+          this.selectEditTypeRayonForm.value_type_rayon.image_rayon=element.value.image_rayon
+          console.log("selectEditTypeRayonForm", this.selectEditTypeRayonForm)
+          this.jsonSubmitEditRayonForm=element.value
+          console.log(this.jsonSubmitEditRayonForm, "jsonSubmitValue")
+          this.submitEditRayonFormCoordonnees.x=element.value.coordonnees.split(";")[0]
+          this.submitEditRayonFormCoordonnees.y=element.value.coordonnees.split(";")[1]
+          this.selectedEditId=element.id
+          this.displayEditRayonForm=true;
+          this.displayEditTypeRayonForm=!this.displayEditTypeRayonForm
+          
+          //call le jsonSubmit sur les text fields champs pour faire apparaitre les valurs grace à v-model="this.jsonzz" sur les v-text
+          //this.callUpdateRayon()
+        }
+        else if(this.listElementToEditForm[0].type=="entree"){
+          
+          this.jsonSubmitEditEntreeForm=element.value
+          //submitEditRayonFormCoordonnees
+          this.submitEditEntreeFormCoordonnees.x=element.value.coordonnees.split(";")[0]
+          this.submitEditEntreeFormCoordonnees.y=element.value.coordonnees.split(";")[1]
+          this.selectedEditId=element.id
+          //this.callUpdateEntree(element)
+          this.displayEditEntreeForm=true
+        }
+      }
+    },
+
+
+    loadElementToDeleteForm(element){
+      if (element != null){
+       this.selectedDeleteId = element.id
+      }
     },
 
     async addRayonToPlan(){
       this.jsonSubmitNewRayonForm = this.preSubmitNewRayonForm
       this.jsonAssociateRayonAndPlan = {id_plan:"", id_rayon:""}
       this.jsonAssociateRayonAndPlan.id_plan=this.plan.id
-      let test = await this.callCreateRayon();
-      console.log(test, "test")
+      await this.callCreateRayon();
       //this.jsonAssociateRayonAndPlan.id_rayon = await this.callCreateRayon();
       this.createAssociationBetweenRayonAndPlan();
       console.log(this.jsonAssociateRayonAndPlan)
       console.log(this.jsonAssociateRayonAndPlan.id_rayon)
+      this.loadPlan()
       //console.log(this.jsonSubmitNewRayonForm )
 
     },
+
+    async addEntreeToPlan(){
+      this.jsonSubmitNewEntreeForm = this.preSubmitNewEntreeForm
+      this.jsonAssociateEntreeAndPlan = {id_plan:"", id_entree:""}
+      this.jsonAssociateEntreeAndPlan.id_plan=this.plan.id
+      await this.callCreateEntree();
+      //this.jsonAssociateRayonAndPlan.id_rayon = await this.callCreateRayon();
+      this.createAssociationBetweenEntreeAndPlan();
+      console.log(this.jsonAssociateRayonAndPlan)
+      console.log(this.jsonAssociateRayonAndPlan.id_rayon)
+      this.loadPlan()
+      //console.log(this.jsonSubmitNewRayonForm )
+
+    },
+
+    editRayonToPlanForm(){
+      if(this.plan!=[]){
+        this.jsonSubmitEditRayonForm.coordonnees=this.submitEditRayonFormCoordonnees.x+";"+this.submitEditRayonFormCoordonnees.y
+        this.callEditRayon();
+        this.jsonSubmitEditRayonForm= {nom_rayon: "", type_rayon: "", longueur:0, largeur:0, image_rayon: "", coordonnees:""}
+        this.selectedEditId=""
+        this.submitEditRayonFormCoordonnees= {x: "", y: ""}
+        this.loadPlan();
+      }
+    },
+
+    editEntreeToPlanForm(){
+      if(this.plan!=[]){
+        this.jsonSubmitEditEntreeForm.coordonnees=this.submitEditEntreeFormCoordonnees.x+";"+this.submitEditEntreeFormCoordonnees.y
+        this.callEditEntree();
+        this.jsonSubmitEditEntreeForm= {longueur:0, largeur:0, coordonnees:""}
+        this.selectedEditId=""
+        this.submitEditEntreeFormCoordonnees= {x: "", y: ""}
+        this.loadPlan();
+      }
+    },
+
+    async deleteRayonOfPlan(){
+      if(this.plan!=[] && confirm("Etes vous sur de vouloir supprimer le rayon "+this.selectedDeleteId+" ?")){
+        alert(await this.deleteAssociationBetweenRayonAndPlan());
+        alert(await this.callDeleteRayon());
+        this.loadPlan();
+        this.selectedDeleteId=""
+      }
+    },
+
+    async deleteEntreeOfPlan(){
+      if(this.plan!=[] && confirm("Etes vous sur de vouloir supprimer lentree "+this.selectedDeleteId+" ?")){
+        alert(await this.deleteAssociationBetweenEntreeAndPlan());
+        alert(await this.callDeleteEntree());
+        this.loadPlan();
+        this.selectedDeleteId=""
+      }
+    },
+
 
     setZoom(zoom,el) {
       
@@ -1595,6 +2598,7 @@ export default {
   },
   data: () => ({
       extend : false,
+      displayChangePlanForm : true,
       cpt:0,
       blocksArray : [],
       beaconArray : [],
@@ -1620,9 +2624,39 @@ export default {
       preSubmitNewRayonForm: {nom_rayon: "", type_rayon: "", longueur:0, largeur:0, image_rayon: "", id_article_phare:null, coordonnees:""},
       preSubmitNewRayonFormCoordonneesX: "",
       preSubmitNewRayonFormCoordonneesY: "",
+      preSubmitNewEntreeForm: {longueur:0, largeur:0, coordonnees:""},
+      preSubmitNewEntreeFormCoordonneesX: "",
+      preSubmitNewEntreeFormCoordonneesY: "",
       jsonSubmitNewRayonForm: {nom_rayon: "", type_rayon: "", longueur:0, largeur:0, image_rayon: "", id_article_phare:null, coordonnees:""},
+      jsonSubmitNewEntreeForm: {longueur:0, largeur:0, coordonnees:""},
       jsonAssociateRayonAndPlan: {id_plan: "", id_rayon: ""},
+      jsonAssociateEntreeAndPlan: {id_plan: "", id_entree: ""},
+      //jsonSubmitNewBeaconForm: {uuid: "", coordonnees:"", batterie:""},
+      jsonSubmitNewEntreeForm: {longueur:0, largeur:0, coordonnees:""},
       deleteIdRayon: "14",
+      displayAddForm: false,
+      displayAddRayonForm: false,
+      displayAddEntreeForm: false,
+      displayEditForm: false,
+      displayDeleteForm: false,
+      displayTypeElementFormEntree:false,
+      displayTypeElementFormRayon: false,
+      listTypeElementForm: ['rayon','entree'],
+      listElementToEditForm: [],
+      selectedElementToDelete: {type:"", id:""},
+      jsonSubmitEditRayonForm: {nom_rayon: "", type_rayon: "", longueur:0, largeur:0, image_rayon: "", coordonnees:""},
+      selectEditTypeRayonForm: { text_type_rayon: "", value_type_rayon:{type_rayon:"", image_rayon: ""}},
+      
+      submitEditRayonFormCoordonnees: {x: "", y: ""},
+      submitEditEntreeFormCoordonnees: {x: "", y: ""},
+      selectedEditId: "",
+      selectedDeleteId: "",
+      displayEditRayonForm: false,
+      displayEditEntreeForm: false,
+      displayEditTypeRayonForm: false,
+      //jsonSubmitUpdateBeaconForm: {uuid: "", coordonnees:"", batterie:""},
+      jsonSubmitEditEntreeForm: {longueur:0, largeur:0, coordonnees:""},
+      
       //nom, prenom, password
       //selectUser: { nom: "", prenom: "", password: "" },
       //inputValue: "",
@@ -1653,6 +2687,23 @@ export default {
     transform: scale(0.1);
     transform-origin: 0% 0% 0px;
   }
+.darkBlueInput.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
+    background: #4b548b !important;
+}
+
+.darkBlueInput.theme--light.v-input input, .theme--light.v-input label {
+    color: #e3dfde !important;
+}
+
+.darkBlueInput.theme--light.v-input input, .theme--light.v-input textarea {
+    color: white !important;
+}
+
+.darkBlueInput.theme--light.v-select .v-select__selection--comma{
+  color: white !important;
+}
+
+
 </style>
 
 
