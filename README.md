@@ -1,8 +1,8 @@
 # Track My Market Business
 
-This project is the front end of the application "Track My Market Business".
-You can access it at this link : https://tmmbusiness.herokuapp.com
-It uses this repo as back end : https://github.com/jdoujet/TTM_business_back_node_api_postgres.git
+This project is the front end of the application "Track My Market Business". <br />
+You can access it at this link : https://tmmbusiness.herokuapp.com <br />
+It uses this repo as back end : https://github.com/jdoujet/TTM_business_back_node_api_postgres.git 
 
 ## Deployment
 Deployed using CI CD offered by Heroku
