@@ -1,26 +1,38 @@
-# Challenge : Dark mode
-Custom css, using Vuetify components to change colors, dark colors for the background : shades of gray, black, white
+# Track My Market Business
 
-# Challenge : Christmas eggs
-Click on title in menu bar "Sauveteurs du dunkerquois"(if the french language is selected, selected by default)
-then click on the image(differents one at each click) until you're redirected to the homepage
-
-# Challenge : World Wide
-
-This project is the front end of the project "nuit de l'info 2021". It uses this repo as back end : https://github.com/mickaelgudin/crise-interstellaire-back-end-nuit-info
-The support of 3 language are supported. 
-Here is the currently supported language : 
-- French
-- English
-- German
+This project is the front end of the application "Track My Market Business". It uses this repo as back end : https://github.com/jdoujet/TTM_business_back_node_api_postgres.git
 
 ## Deployment
-deployed using cd offered by heroku
+Deployed using CI CD offered by Heroku
 
 ## Stack
 - VueJS 2
 - Vuetify
 - Vue i18n
+
+## Usage
+
+### Select your map
+
+![Alt text](/screenshots/step1.png)
+
+![Alt text](/screenshots/step2.png)
+
+You can load supermarket map after choosing your user account, supermarket and floor
+
+### Select your layout
+
+![Alt text](/screenshots/step3.png)
+
+You can see details about your layout when you click on it on the map (ex : trendy articles , time spent in average by customers)
+
+### Add, modify or delete elements of the map
+
+![Alt text](/screenshots/step4.png)
+
+![Alt text](/screenshots/step5.png)
+
+You can add, modify or delete entrances or layouts elements on the map
 
 ## Project setup
 ```
